@@ -1,0 +1,176 @@
+﻿@model Break_Bulk_System.ViewModels.VesselMasterViewModel
+
+@{
+    ViewData["Title"] = "Create Vessel Master";
+}
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col">
+            <h2>Create Vessel Master</h2>
+        </div>
+        <div class="col text-end">
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5>Vessel Information</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.VesselCode" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.VesselCode" class="form-control" maxlength="10" />
+                            <span asp-validation-for="VesselMaster.VesselCode" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.VesselName" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.VesselName" class="form-control" maxlength="26" />
+                            <span asp-validation-for="VesselMaster.VesselName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.VesselTypeCode" class="control-label fw-bold"></label>
+                            <select asp-for="VesselMaster.VesselTypeCode" class="form-control">
+                                <option value="">-- Select Vessel Type --</option>
+                                @foreach (var type in Model.VesselTypes)
+                                {
+                                    <option value="@type.Code">@type.Code - @type.Description</option>
+                                }
+                            </select>
+                            <span asp-validation-for="VesselMaster.VesselTypeCode" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.ShippingLineCode" class="control-label fw-bold"></label>
+                            <select asp-for="VesselMaster.ShippingLineCode" class="form-control">
+                                <option value="">-- Select Shipping Line --</option>
+                                @foreach (var line in Model.ShippingLines)
+                                {
+                                    <option value="@line.Code">@line.Code - @line.Name</option>
+                                }
+                            </select>
+                            <span asp-validation-for="VesselMaster.ShippingLineCode" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.ImpExp" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.ImpExp" class="form-control" maxlength="3" />
+                            <span asp-validation-for="VesselMaster.ImpExp" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.LoadingBerth" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.LoadingBerth" class="form-control" maxlength="2" />
+                            <span asp-validation-for="VesselMaster.LoadingBerth" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.LoadingDate" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.LoadingDate" type="date" class="form-control" />
+                            <span asp-validation-for="VesselMaster.LoadingDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.LoadingTime" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.LoadingTime" type="time" class="form-control" />
+                            <span asp-validation-for="VesselMaster.LoadingTime" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.ArrivalDate" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.ArrivalDate" type="date" class="form-control" />
+                            <span asp-validation-for="VesselMaster.ArrivalDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.ArrivalTime" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.ArrivalTime" type="time" class="form-control" />
+                            <span asp-validation-for="VesselMaster.ArrivalTime" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.SailDate" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.SailDate" type="date" class="form-control" />
+                            <span asp-validation-for="VesselMaster.SailDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.SailTime" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.SailTime" type="time" class="form-control" />
+                            <span asp-validation-for="VesselMaster.SailTime" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.VoyageNumber" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.VoyageNumber" class="form-control" maxlength="12" />
+                            <span asp-validation-for="VesselMaster.VoyageNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.CallSign" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.CallSign" class="form-control" maxlength="8" />
+                            <span asp-validation-for="VesselMaster.CallSign" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.Charterer" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.Charterer" class="form-control" maxlength="6" />
+                            <span asp-validation-for="VesselMaster.Charterer" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.VPM" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.VPM" class="form-control" maxlength="8" />
+                            <span asp-validation-for="VesselMaster.VPM" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.BillNo" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.BillNo" class="form-control" maxlength="26" />
+                            <span asp-validation-for="VesselMaster.BillNo" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.StockCompleted" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.StockCompleted" class="form-control" maxlength="1" />
+                            <span asp-validation-for="VesselMaster.StockCompleted" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="VesselMaster.StorageDate" class="control-label fw-bold"></label>
+                            <input asp-for="VesselMaster.StorageDate" type="date" class="form-control" />
+                            <span asp-validation-for="VesselMaster.StorageDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mt-4">
+                    <button type="submit" class="btn btn-success">Create</button>
+                    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

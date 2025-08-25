@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Break_Bulk_System.Models.Manifest>
+
+@{
+    ViewData["Title"] = "Manifest";
+}
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col">
+            <h2>Manifest</h2>
+        </div>
+        <div class="col text-end">
+            <a asp-action="Create" class="btn btn-primary">Create New</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Bill No</th>
+                        <th>Vessel Code</th>
+                        <th>Vessel Name</th>
+                        <th>Description</th>
+                        <th>Net Weight</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.BillNo</td>
+                            <td>@item.VesselCode</td>
+                            <td>@(item.VesselMaster?.VesselName ?? "N/A")</td>
+                            <td>@item.Description</td>
+                            <td>@item.NetWeightKg</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

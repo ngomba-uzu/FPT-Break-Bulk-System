@@ -1,0 +1,54 @@
+﻿@model Break_Bulk_System.Models.Manifest
+
+@{
+    ViewData["Title"] = "Manifest Details";
+}
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col">
+            <h2>Manifest Details</h2>
+        </div>
+        <div class="col text-end">
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            <h5>Bill No: @Model.BillNo</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Vessel Information</h6>
+                    <dl class="row">
+                        <dt class="col-sm-4">Vessel Code:</dt>
+                        <dd class="col-sm-8">@Model.VesselCode</dd>
+
+                        <dt class="col-sm-4">Vessel Name:</dt>
+                        <dd class="col-sm-8">@(Model.VesselMaster?.VesselName ?? "N/A")</dd>
+
+                        <dt class="col-sm-4">Bill No:</dt>
+                        <dd class="col-sm-8">@Model.BillNo</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <h6>Cargo Information</h6>
+                    <dl class="row">
+                        <dt class="col-sm-4">Description:</dt>
+                        <dd class="col-sm-8">@Model.Description</dd>
+
+                        <dt class="col-sm-4">Net Weight (Kg):</dt>
+                        <dd class="col-sm-8">@Model.NetWeightKg</dd>
+
+                        <dt class="col-sm-4">Gross Unit (Kg):</dt>
+                        <dd class="col-sm-8">@Model.GrossUnitKg</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Add more details as needed -->
+        </div>
+    </div>
+</div>

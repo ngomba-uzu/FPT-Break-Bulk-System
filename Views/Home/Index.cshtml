@@ -1,8 +1,172 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Break Bulk System - Main Menu";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="system-container">
+    <!-- System Header -->
+    <div class="system-header">
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <h4 class="mb-0">
+                    <i class="fas fa-building me-2"></i>
+                    FPT GROUP (PTY) LTD
+                </h4>
+            </div>
+            <div class="col-md-4 text-center">
+                <h3 class="mb-0">
+                    <i class="fas fa-anchor me-2"></i>
+                    GENERAL CARGO SYSTEM
+                </h3>
+                <small>DURBAN TERMINAL</small>
+            </div>
+            <div class="col-md-4 text-end">
+                <h5 class="mb-0">
+                    <i class="fas fa-calendar me-2"></i>
+                    @DateTime.Now.ToString("dd MMM yyyy").ToUpper()
+                </h5>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Body -->
+    <div class="system-body">
+        <!-- Menu Grid -->
+        <div class="row">
+            <!-- Operations Menu -->
+            <div class="col-md-6 mb-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="fas fa-list-alt me-2"></i>OPERATIONS</h5>
+                    </div>
+                    <div class="card-body">
+                        <a asp-controller="VesselMaster" asp-action="Index" class="menu-item">
+                            <span class="menu-number">1</span>
+                            <span class="menu-icon"><i class="fas fa-ship"></i></span>
+                            <span class="menu-text">VESSEL MASTER</span>
+                        </a>
+                        <a asp-controller="Manifest" asp-action="Index" class="menu-item">
+                            <span class="menu-number">2</span>
+                            <span class="menu-icon"><i class="fas fa-file-alt"></i></span>
+                            <span class="menu-text">MANIFEST</span>
+                        </a>
+                        <a href="#" class="menu-item">
+                            <span class="menu-number">3</span>
+                            <span class="menu-icon"><i class="fas fa-barcode"></i></span>
+                            <span class="menu-text">PRINT PRODUCT BCODES</span>
+                        </a>
+                        <a href="#" class="menu-item">
+                            <span class="menu-number">4</span>
+                            <span class="menu-icon"><i class="fas fa-chart-bar"></i></span>
+                            <span class="menu-text">MANIFEST REPORT</span>
+                        </a>
+                        <a href="#" class="menu-item">
+                            <span class="menu-number">5</span>
+                            <span class="menu-icon"><i class="fas fa-clipboard-list"></i></span>
+                            <span class="menu-text">PRINT OFF-TALLY</span>
+                        </a>
+                        <a href="#" class="menu-item">
+                            <span class="menu-number">6</span>
+                            <span class="menu-icon"><i class="fas fa-dolly"></i></span>
+                            <span class="menu-text">INTAKES</span>
+                        </a>
+                        <a href="#" class="menu-item">
+                            <span class="menu-number">7</span>
+                            <span class="menu-icon"><i class="fas fa-truck-loading"></i></span>
+                            <span class="menu-text">PLAN DISPATCHES</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Menu -->
+            <div class="col-md-6 mb-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>SYSTEM MENU</h5>
+                    </div>
+                    <div class="card-body">
+                        <a href="#" class="menu-item">
+                            <span class="menu-number">8</span>
+                            <span class="menu-icon"><i class="fas fa-plus-circle"></i></span>
+                            <span class="menu-text">NEW GC MENU</span>
+                        </a>
+                        <a href="#" class="menu-item">
+                            <span class="menu-number">9</span>
+                            <span class="menu-icon"><i class="fas fa-history"></i></span>
+                            <span class="menu-text">INTAKE HISTORY</span>
+                        </a>
+                        <a href="#" class="menu-item">
+                            <span class="menu-number">10</span>
+                            <span class="menu-icon"><i class="fas fa-truck-moving"></i></span>
+                            <span class="menu-text">DISPATCH HISTORY</span>
+                        </a>
+                        <a href="#" class="menu-item">
+                            <span class="menu-number">11</span>
+                            <span class="menu-icon"><i class="fas fa-file-export"></i></span>
+                            <span class="menu-text">INTAKE REPORT</span>
+                        </a>
+                        <a href="#" class="menu-item">
+                            <span class="menu-number">12</span>
+                            <span class="menu-icon"><i class="fas fa-tasks"></i></span>
+                            <span class="menu-text">DISPATCH INSTRUCTION</span>
+                        </a>
+                        <a href="#" class="menu-item">
+                            <span class="menu-number">13</span>
+                            <span class="menu-icon"><i class="fas fa-boxes"></i></span>
+                            <span class="menu-text">STOCK REPORT</span>
+                        </a>
+                        <a href="#" class="menu-item">
+                            <span class="menu-number">14</span>
+                            <span class="menu-icon"><i class="fas fa-download"></i></span>
+                            <span class="menu-text">LANDING ORDER</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value text-primary">12</div>
+                <div class="stat-label">Active Vessels</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value text-success">47</div>
+                <div class="stat-label">Today's Manifests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value text-warning">8</div>
+                <div class="stat-label">Pending Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value text-info">99.8%</div>
+                <div class="stat-label">System Uptime</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-item">
+            <i class="fas fa-check-circle text-success"></i>
+            <span>System Status:</span>
+            <span class="status-badge">OPERATIONAL</span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-database text-primary"></i>
+            <span>Database:</span>
+            <span class="status-badge">ONLINE</span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-server text-info"></i>
+            <span>Server:</span>
+            <span class="status-badge">DBN-TERM-01</span>
+        </div>
+        <div class="status-item">
+            <i class="fas fa-shield-alt text-warning"></i>
+            <span>Security:</span>
+            <span class="status-badge">LEVEL 4</span>
+        </div>
+    </div>
 </div>
