@@ -11,6 +11,7 @@ namespace Break_Bulk_System.Data
             : base(options)
         {
         }
+        public DbSet<TransportSea> TransportSeas { get; set; }
 
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<VesselMaster> VesselMasters { get; set; }
@@ -18,9 +19,30 @@ namespace Break_Bulk_System.Data
         public DbSet<VesselType> VesselTypes { get; set; }
         public DbSet<ShippingLine> ShippingLines { get; set; }
 
+        public DbSet<Charterer> Charterers { get; set; }
+        // Data/ApplicationDbContext.cs (update the ShippingLine relationship)
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<TransportSea>(entity =>
+            {
+                entity.HasKey(ts => ts.TransportID);
+                entity.Property(ts => ts.TransportID).HasMaxLength(10);
+                entity.Property(ts => ts.Name).HasMaxLength(100);
+                entity.Property(ts => ts.CarrierCode).HasMaxLength(10);
+                entity.Property(ts => ts.CarrierName).HasMaxLength(100);
+            });
+
+
+            modelBuilder.Entity<Charterer>(entity =>
+            {
+                entity.HasKey(c => c.KeyCode);
+                entity.Property(c => c.KeyCode).HasMaxLength(6);
+                entity.Property(c => c.Description).HasMaxLength(50);
+                entity.Property(c => c.LongDescription).HasMaxLength(100);
+            });
+
 
             // Configure VesselType
             modelBuilder.Entity<VesselType>(entity =>
@@ -61,10 +83,11 @@ namespace Break_Bulk_System.Data
                     .HasForeignKey(vm => vm.VesselTypeCode)
                     .OnDelete(DeleteBehavior.Restrict);
 
+                // CHANGE THIS LINE: Set DeleteBehavior.SetNull for ShippingLine
                 entity.HasOne(vm => vm.ShippingLine)
                     .WithMany()
                     .HasForeignKey(vm => vm.ShippingLineCode)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.SetNull); // Changed from Restrict to SetNull
             });
 
             // Configure Manifest
@@ -99,20 +122,23 @@ namespace Break_Bulk_System.Data
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // Seed data for dropdowns
+            // Remove the seed data for ShippingLines since we're uploading via CSV
+            // modelBuilder.Entity<ShippingLine>().HasData(
+            //     new ShippingLine { Code = "MAEU", Name = "Maersk Line" },
+            //     new ShippingLine { Code = "MSC", Name = "Mediterranean Shipping Company" },
+            //     new ShippingLine { Code = "CMDU", Name = "CMA CGM" },
+            //     new ShippingLine { Code = "COSU", Name = "COSCO Shipping" }
+            // );
+
+            // Keep VesselType seed data
             modelBuilder.Entity<VesselType>().HasData(
                 new VesselType { Code = "01", Description = "Container Ship" },
                 new VesselType { Code = "02", Description = "Bulk Carrier" },
                 new VesselType { Code = "03", Description = "Tanker" },
                 new VesselType { Code = "04", Description = "General Cargo" }
             );
-
-            modelBuilder.Entity<ShippingLine>().HasData(
-                new ShippingLine { Code = "MAEU", Name = "Maersk Line" },
-                new ShippingLine { Code = "MSC", Name = "Mediterranean Shipping Company" },
-                new ShippingLine { Code = "CMDU", Name = "CMA CGM" },
-                new ShippingLine { Code = "COSU", Name = "COSCO Shipping" }
-            );
         }
+
+
     }
 }
