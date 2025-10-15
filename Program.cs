@@ -17,6 +17,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+
+// Add this to your Program.cs
+builder.Services.AddScoped<ICsvService, CsvService>();
+
+
+
 // Identity with Roles enabled (only this, remove AddDefaultIdentity)
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
@@ -24,6 +30,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
+// Add this to your Program.cs
 
 // MVC + Razor Pages
 builder.Services.AddControllersWithViews();

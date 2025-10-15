@@ -32,7 +32,10 @@ namespace Break_Bulk_System.Controllers
             var viewModel = new VesselMasterViewModel
             {
                 VesselTypes = await _context.VesselTypes.ToListAsync(),
-                ShippingLines = await _context.ShippingLines.ToListAsync()
+                ShippingLines = await _context.ShippingLines.ToListAsync(),
+                CallSigns = await _context.TransportSeas.OrderBy(t => t.TransportID).ToListAsync(),
+                  Charterers = await _context.Charterers.OrderBy(c => c.Description).ToListAsync()
+
             };
             return View(viewModel);
         }
@@ -83,7 +86,10 @@ namespace Break_Bulk_System.Controllers
             {
                 VesselMaster = vesselMaster,
                 VesselTypes = await _context.VesselTypes.ToListAsync(),
-                ShippingLines = await _context.ShippingLines.ToListAsync()
+                ShippingLines = await _context.ShippingLines.ToListAsync(),
+                CallSigns = await _context.TransportSeas.OrderBy(t => t.TransportID).ToListAsync(),
+
+                  Charterers = await _context.Charterers.OrderBy(c => c.Description).ToListAsync()
             };
 
             return View(viewModel);
@@ -124,6 +130,7 @@ namespace Break_Bulk_System.Controllers
 
             viewModel.VesselTypes = await _context.VesselTypes.ToListAsync();
             viewModel.ShippingLines = await _context.ShippingLines.ToListAsync();
+
             return View(viewModel);
         }
 

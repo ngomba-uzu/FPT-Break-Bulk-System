@@ -1,0 +1,105 @@
+﻿@model Break_Bulk_System.ViewModels.ShippingLineUploadViewModel
+
+@{
+    ViewData["Title"] = "Upload Shipping Lines CSV";
+}
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col">
+            <h2>Upload Shipping Lines CSV</h2>
+        </div>
+        <div class="col text-end">
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Upload CSV File</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Upload" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle"></i> CSV Format Requirements</h6>
+                            <ul class="mb-0">
+                                <li>File must be in CSV format with headers: <code>Code,Description</code></li>
+                                <li>Code column: Maximum 6 characters</li>
+                                <li>Description column: Maximum 100 characters</li>
+                                <li>Existing shipping lines will be completely replaced</li>
+                            </ul>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CsvFile" class="form-label fw-bold">CSV File</label>
+                            <input asp-for="CsvFile" type="file" class="form-control" accept=".csv" />
+                            <span asp-validation-for="CsvFile" class="text-danger"></span>
+                            <div class="form-text">Select a CSV file containing shipping line data.</div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Warning:</strong> Uploading a new CSV file will replace all existing shipping lines.
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-upload"></i> Upload and Replace All
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Sample CSV Format</h5>
+                </div>
+                <div class="card-body">
+                    <pre class="bg-light p-3 small">Code,Description
+MAEU,Maersk Line
+MSC,Mediterranean Shipping Company
+CMDU,CMA CGM
+COSU,COSCO Shipping
+...</pre>
+                    <p class="small text-muted">
+                        Download the provided CSV file and use it as a template for your data.
+                    </p>
+                    <a href="#" class="btn btn-outline-primary btn-sm" id="downloadTemplate">
+                        <i class="fas fa-download"></i> Download Template
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.getElementById('downloadTemplate').addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const csvContent = "Code,Description\nMAEU,Maersk Line\nMSC,Mediterranean Shipping Company\nCMDU,CMA CGM\nCOSU,COSCO Shipping";
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('hidden', '');
+            a.setAttribute('href', url);
+            a.setAttribute('download', 'shipping_lines_template.csv');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+    </script>
+}

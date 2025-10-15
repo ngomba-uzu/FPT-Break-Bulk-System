@@ -122,16 +122,40 @@
 
                         <div class="form-group mb-3">
                             <label asp-for="VesselMaster.CallSign" class="control-label fw-bold"></label>
-                            <input asp-for="VesselMaster.CallSign" class="form-control" maxlength="8" />
+                            <select asp-for="VesselMaster.CallSign" class="form-control">   
+                                <option value="">-- Select Call Sign --</option>
+                                @foreach (var callSign in Model.CallSigns)
+                                {
+                                    <option value="@callSign.TransportID">
+                                        @callSign.TransportID - @callSign.Name
+                                    </option>
+                                }
+                            </select>
                             <span asp-validation-for="VesselMaster.CallSign" class="text-danger"></span>
+                            <div class="form-text">
+                                <a asp-controller="TransportSea" asp-action="Upload" target="_blank">
+                                    Manage Call Signs
+                                </a>
+                            </div>
                         </div>
-
                         <div class="form-group mb-3">
                             <label asp-for="VesselMaster.Charterer" class="control-label fw-bold"></label>
-                            <input asp-for="VesselMaster.Charterer" class="form-control" maxlength="6" />
+                            <select asp-for="VesselMaster.Charterer" class="form-control">
+                                <option value="">-- Select Charterer --</option>
+                                @foreach (var charterer in Model.Charterers)
+                                {
+                                    <option value="@charterer.KeyCode">
+                                        @charterer.KeyCode - @charterer.Description
+                                    </option>
+                                }
+                            </select>
                             <span asp-validation-for="VesselMaster.Charterer" class="text-danger"></span>
+                            <div class="form-text">
+                                <a asp-controller="Charterer" asp-action="Upload" target="_blank">
+                                    Manage Charterers
+                                </a>
+                            </div>
                         </div>
-                    </div>
 
                     <div class="col-md-6">
                         <div class="form-group mb-3">

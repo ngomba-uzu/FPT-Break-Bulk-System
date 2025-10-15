@@ -120,6 +120,23 @@
                             <span class="menu-icon"><i class="fas fa-download"></i></span>
                             <span class="menu-text">LANDING ORDER</span>
                         </a>
+                        <!-- In your main menu view, add this to the System Menu section -->
+                        <a asp-controller="TransportSea" asp-action="Upload" class="menu-item">
+                            <span class="menu-number">15</span>
+                            <span class="menu-icon"><i class="fas fa-upload"></i></span>
+                            <span class="menu-text">MANAGE CALL SIGNS</span>
+                        </a>
+                        <!-- In your main menu view, add this menu item -->
+                        <a asp-controller="ShippingLine" asp-action="Index" class="menu-item">
+                            <span class="menu-number">16</span>
+                            <span class="menu-icon"><i class="fas fa-ship"></i></span>
+                            <span class="menu-text">SHIPPING LINES</span>
+                        </a>
+                        <a asp-controller="Charterer" asp-action="Index" class="menu-item">
+                            <span class="menu-number">17</span>
+                            <span class="menu-icon"><i class="fas fa-ship"></i></span>
+                            <span class="menu-text">charterers</span>
+                        </a>
                     </div>
                 </div>
             </div>

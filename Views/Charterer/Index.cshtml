@@ -1,0 +1,103 @@
+﻿@model List<Break_Bulk_System.Models.Charterer>
+
+@{
+    ViewData["Title"] = "Charterers";
+}
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col">
+            <h2>Charterers</h2>
+        </div>
+        <div class="col text-end">
+            <a asp-action="Upload" class="btn btn-primary">Upload CSV</a>
+            @if (Model.Any())
+            {
+                    <button type="button" class="btn btn-danger ms-2" data-bs-toggle="modal" data-bs-target="#deleteAllModal">
+                        Delete All
+                    </button>
+            }
+            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary ms-2">Back to Main Menu</a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+    }
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Charterers (@Model.Count)</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Key Code</th>
+                                    <th>Description</th>
+                                    <th>Long Description</th>
+                                    <th>Created Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var charterer in Model)
+                            {
+                                        <tr>
+                                            <td><strong>@charterer.KeyCode</strong></td>
+                                            <td>@charterer.Description</td>
+                                            <td>@charterer.LongDescription</td>
+                                            <td>@charterer.CreatedDate.ToString("dd MMM yyyy HH:mm")</td>
+                                        </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+            }
+            else
+            {
+                    <div class="text-center py-4">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No Charterers Found</h5>
+                        <p class="text-muted">Upload a CSV file to get started.</p>
+                        <a asp-action="Upload" class="btn btn-primary">Upload CSV</a>
+                    </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Delete All Confirmation Modal -->
+@if (Model.Any())
+{
+        <div class="modal fade" id="deleteAllModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Confirm Delete All</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete all @Model.Count charterers? This action cannot be undone.</p>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Warning:</strong> This will remove all charterers from the system.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <form asp-action="DeleteAll" method="post">
+                        @Html.AntiForgeryToken()
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-danger">Delete All</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+}
