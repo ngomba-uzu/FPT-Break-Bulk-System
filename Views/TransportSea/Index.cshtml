@@ -3,7 +3,17 @@
 @{
     ViewData["Title"] = "Call Signs";
 }
-
+<div class="mb-3">
+    <form asp-action="TriggerBackgroundUpdate" method="post">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to manually trigger the CSV update?')">
+            <i class="fas fa-sync-alt"></i> Trigger Manual Update
+        </button>
+        <small class="form-text text-muted">
+            Last automatic update runs every 2 hours. Use this to update immediately.
+        </small>
+    </form>
+</div>
 <div class="container-fluid">
     <div class="row mb-3">
         <div class="col">

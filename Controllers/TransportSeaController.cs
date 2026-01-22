@@ -37,6 +37,39 @@ namespace Break_Bulk_System.Controllers
             var viewModel = new TransportSeaUploadViewModel();
             return View(viewModel);
         }
+        // Controllers/TransportSeaController.cs
+        // Add this method to your existing controller
+        // Add this method to your existing TransportSeaController.cs
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+       
+        public async Task<IActionResult> TriggerBackgroundUpdate()
+        {
+            try
+            {
+                using var scope = HttpContext.RequestServices.CreateScope();
+                var csvProcessor = scope.ServiceProvider.GetRequiredService<ITransportSeaCsvProcessor>();
+
+                var success = await csvProcessor.ProcessCsvFromUrlAsync();
+
+                if (success)
+                {
+                    TempData["SuccessMessage"] = "Background update completed successfully.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Background update failed. Check logs for details.";
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error triggering background update");
+                TempData["ErrorMessage"] = $"Error triggering update: {ex.Message}";
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -335,6 +368,9 @@ namespace Break_Bulk_System.Controllers
             }
         }
     }
+
+
+
 
     // CSV record class
     public class TransportSeaCsvRecord

@@ -21,7 +21,10 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 // Add this to your Program.cs
 builder.Services.AddScoped<ICsvService, CsvService>();
 
-
+// Program.cs
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<ITransportSeaCsvProcessor, TransportSeaCsvProcessor>();
+builder.Services.AddHostedService<TransportSeaBackgroundService>();
 
 // Identity with Roles enabled (only this, remove AddDefaultIdentity)
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>

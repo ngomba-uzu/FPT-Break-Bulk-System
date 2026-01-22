@@ -4,6 +4,7 @@ using Break_Bulk_System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Break_Bulk_System.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251008093121_shippingline")]
+    partial class shippingline
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,29 +24,6 @@ namespace Break_Bulk_System.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Break_Bulk_System.Models.Charterer", b =>
-                {
-                    b.Property<string>("KeyCode")
-                        .HasMaxLength(6)
-                        .HasColumnType("nvarchar(6)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("LongDescription")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("KeyCode");
-
-                    b.ToTable("Charterers");
-                });
 
             modelBuilder.Entity("Break_Bulk_System.Models.Manifest", b =>
                 {
@@ -176,6 +156,32 @@ namespace Break_Bulk_System.Data.Migrations
                     b.HasKey("Code");
 
                     b.ToTable("ShippingLines");
+
+                    b.HasData(
+                        new
+                        {
+                            Code = "MAEU",
+                            CreatedDate = new DateTime(2025, 10, 8, 11, 31, 17, 600, DateTimeKind.Local).AddTicks(8359),
+                            Name = "Maersk Line"
+                        },
+                        new
+                        {
+                            Code = "MSC",
+                            CreatedDate = new DateTime(2025, 10, 8, 11, 31, 17, 600, DateTimeKind.Local).AddTicks(8385),
+                            Name = "Mediterranean Shipping Company"
+                        },
+                        new
+                        {
+                            Code = "CMDU",
+                            CreatedDate = new DateTime(2025, 10, 8, 11, 31, 17, 600, DateTimeKind.Local).AddTicks(8386),
+                            Name = "CMA CGM"
+                        },
+                        new
+                        {
+                            Code = "COSU",
+                            CreatedDate = new DateTime(2025, 10, 8, 11, 31, 17, 600, DateTimeKind.Local).AddTicks(8388),
+                            Name = "COSCO Shipping"
+                        });
                 });
 
             modelBuilder.Entity("Break_Bulk_System.Models.TransportSea", b =>
@@ -571,7 +577,7 @@ namespace Break_Bulk_System.Data.Migrations
                     b.HasOne("Break_Bulk_System.Models.ShippingLine", "ShippingLine")
                         .WithMany()
                         .HasForeignKey("ShippingLineCode")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Break_Bulk_System.Models.VesselType", "VesselType")
                         .WithMany()
