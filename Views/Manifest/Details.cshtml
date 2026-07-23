@@ -10,9 +10,17 @@
             <h2>Manifest Details</h2>
         </div>
         <div class="col text-end">
+            <a asp-action="PrintBarcode" asp-route-vesselCode="@Model.VesselCode" asp-route-productBarcode="@Model.ProductBarcode" class="btn btn-primary">
+                <i class="fas fa-barcode me-1"></i> Print Product Barcode
+            </a>
             <a asp-action="Index" class="btn btn-secondary">Back to List</a>
         </div>
     </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
 
     <div class="card">
         <div class="card-header bg-info text-white">
@@ -21,8 +29,14 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h6>Vessel Information</h6>
+                    <h6>Manifest &amp; Vessel Information</h6>
                     <dl class="row">
+                        <dt class="col-sm-4">Manifest No:</dt>
+                        <dd class="col-sm-8">@Model.ManifestNumber</dd>
+
+                        <dt class="col-sm-4">Product Barcode:</dt>
+                        <dd class="col-sm-8">@Model.ProductBarcode</dd>
+
                         <dt class="col-sm-4">Vessel Code:</dt>
                         <dd class="col-sm-8">@Model.VesselCode</dd>
 

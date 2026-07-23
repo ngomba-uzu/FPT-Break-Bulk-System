@@ -1,0 +1,229 @@
+@model Break_Bulk_System.ViewModels.PrintBarcodeViewModel
+
+@{
+    ViewData["Title"] = "Print Product Barcodes";
+    var m = Model.Manifest;
+}
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col">
+            <h2><i class="fas fa-barcode me-2"></i>Print Product Barcodes</h2>
+        </div>
+        <div class="col text-end">
+            <a asp-action="Index" class="btn btn-secondary">Back to Manifests</a>
+        </div>
+    </div>
+
+    <!-- Search form -->
+    <div class="card mb-4 no-print">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Look up a manifest</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="PrintBarcode" method="get" class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label fw-bold">Vessel No</label>
+                    <select name="vesselCode" class="form-control">
+                        <option value="">-- Select Vessel --</option>
+                        @foreach (var vessel in Model.Vessels)
+                        {
+                            if (vessel.VesselCode == Model.VesselCode)
+                            {
+                                <option value="@vessel.VesselCode" selected>@vessel.VesselCode - @vessel.VesselName</option>
+                            }
+                            else
+                            {
+                                <option value="@vessel.VesselCode">@vessel.VesselCode - @vessel.VesselName</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Product Barcode</label>
+                    <input type="text" name="productBarcode" value="@Model.ProductBarcode"
+                           class="form-control" placeholder="e.g. 200000000001" autofocus />
+                    <div class="form-text">Type it in or scan it into this field with a barcode scanner.</div>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-search me-1"></i> Display
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model.Searched && Model.ErrorMessage != null)
+    {
+        <div class="alert alert-warning no-print">
+            <i class="fas fa-exclamation-triangle me-1"></i> @Model.ErrorMessage
+        </div>
+    }
+
+    @if (m != null)
+    {
+        <div class="card">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Manifest @m.ManifestNumber</h5>
+                <button type="button" class="btn btn-light btn-sm no-print" onclick="window.print()">
+                    <i class="fas fa-print me-1"></i> Print
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Manifest details -->
+                    <div class="col-md-7">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-5">Manifest No</dt>
+                            <dd class="col-sm-7">@m.ManifestNumber</dd>
+
+                            <dt class="col-sm-5">Product Barcode</dt>
+                            <dd class="col-sm-7">@m.ProductBarcode</dd>
+
+                            <dt class="col-sm-5">Vessel No</dt>
+                            <dd class="col-sm-7">@m.VesselCode</dd>
+
+                            <dt class="col-sm-5">Vessel Name</dt>
+                            <dd class="col-sm-7">@(m.VesselMaster?.VesselName ?? "N/A")</dd>
+
+                            <dt class="col-sm-5">Bill No</dt>
+                            <dd class="col-sm-7">@m.BillNo</dd>
+
+                            <dt class="col-sm-5">Description</dt>
+                            <dd class="col-sm-7">@m.Description</dd>
+
+                            <dt class="col-sm-5">Mark</dt>
+                            <dd class="col-sm-7">@m.Mark</dd>
+
+                            <dt class="col-sm-5">Ld Port</dt>
+                            <dd class="col-sm-7">@m.LdPort</dd>
+
+                            <dt class="col-sm-5">Expected Qty</dt>
+                            <dd class="col-sm-7">@m.ExpectedQty</dd>
+
+                            <dt class="col-sm-5">Net Weight (Kg)</dt>
+                            <dd class="col-sm-7">@m.NetWeightKg</dd>
+
+                            <dt class="col-sm-5">Gross Unit (Kg)</dt>
+                            <dd class="col-sm-7">@m.GrossUnitKg</dd>
+
+                            <dt class="col-sm-5">Location</dt>
+                            <dd class="col-sm-7">@m.Location</dd>
+
+                            <dt class="col-sm-5">Cargo Type</dt>
+                            <dd class="col-sm-7">@m.CargoType</dd>
+
+                            <dt class="col-sm-5">Commodity</dt>
+                            <dd class="col-sm-7">@m.Commodity</dd>
+                        </dl>
+                    </div>
+
+                    <!-- Scannable codes -->
+                    <div class="col-md-5 text-center border-start">
+                        <p class="fw-bold mb-1">Product Barcode</p>
+                        <div class="mb-4 barcode-svg">
+                            @Html.Raw(Model.BarcodeSvg)
+                        </div>
+
+                        <p class="fw-bold mb-1">Scan with phone / tablet</p>
+                        <img src="@Model.QrDataUri" alt="QR code for manifest @m.ManifestNumber"
+                             class="qr-img" style="max-width: 200px; width: 100%; height: auto;" />
+                        <p class="text-muted small mt-2 no-print">
+                            Scanning this QR opens these manifest details on a phone or tablet.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <style>
+        @@media print {
+            @@page {
+                size: A4 portrait;
+                margin: 10mm;
+            }
+
+            /* Hide everything that isn't the manifest card */
+            .no-print,
+            .main-header,
+            footer {
+                display: none !important;
+            }
+
+            /* Let the printed content use the full page width */
+            body {
+                background: #fff !important;
+                font-size: 11px !important;
+            }
+
+            .container-fluid,
+            .container-fluid.py-4 {
+                padding: 0 !important;
+                margin: 0 !important;
+                display: block !important;
+            }
+
+            h2 {
+                font-size: 16px !important;
+                margin-bottom: 6px !important;
+            }
+
+            /* Keep the whole card on a single page */
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #999 !important;
+                border-radius: 0 !important;
+                transform: none !important;
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            .card:hover {
+                transform: none !important;
+            }
+
+            .card-header {
+                padding: 4px 10px !important;
+                background: #eee !important;
+                color: #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .card-header h5 {
+                font-size: 13px !important;
+            }
+
+            .card-body {
+                padding: 8px 10px !important;
+            }
+
+            /* Tighten the details list */
+            dl.row {
+                margin-bottom: 0 !important;
+            }
+
+            dl.row dt,
+            dl.row dd {
+                padding-top: 1px !important;
+                padding-bottom: 1px !important;
+                line-height: 1.25 !important;
+                font-size: 11px !important;
+            }
+
+            /* Constrain the scannable codes so they never push to a 2nd page */
+            .barcode-svg svg {
+                max-height: 60px !important;
+                width: auto !important;
+            }
+
+            .qr-img {
+                max-width: 130px !important;
+            }
+        }
+    </style>
+}

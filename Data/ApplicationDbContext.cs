@@ -95,6 +95,18 @@ namespace Break_Bulk_System.Data
             {
                 entity.HasKey(m => m.Id);
 
+                entity.Property(m => m.ManifestNumber).HasMaxLength(20);
+                entity.Property(m => m.ProductBarcode).HasMaxLength(20);
+
+                // Manifest numbers and product barcodes are unique across the system.
+                // Filter out NULLs so pre-existing rows without codes don't clash.
+                entity.HasIndex(m => m.ManifestNumber)
+                    .IsUnique()
+                    .HasFilter("[ManifestNumber] IS NOT NULL");
+                entity.HasIndex(m => m.ProductBarcode)
+                    .IsUnique()
+                    .HasFilter("[ProductBarcode] IS NOT NULL");
+
                 entity.Property(m => m.VesselCode).HasMaxLength(10);
                 entity.Property(m => m.BillNo).HasMaxLength(26);
                 entity.Property(m => m.Mark).HasMaxLength(20);

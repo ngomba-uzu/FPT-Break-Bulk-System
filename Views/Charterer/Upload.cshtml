@@ -27,7 +27,7 @@
                         <div class="alert alert-info">
                             <h6><i class="fas fa-info-circle"></i> CSV Format Requirements</h6>
                             <ul class="mb-0">
-                                <li>File must be in CSV format with headers: <code>Key Code,Description,Long Description</code></li>
+                                <li>File must be a CSV (.csv) or Excel (.xlsx) file with headers: <code>Key Code,Description,Long Description</code></li>
                                 <li>Key Code: Maximum 6 characters</li>
                                 <li>Description: Maximum 50 characters</li>
                                 <li>Long Description: Maximum 100 characters</li>
@@ -36,10 +36,10 @@
                         </div>
 
                         <div class="form-group mb-3">
-                            <label asp-for="CsvFile" class="form-label fw-bold">CSV File</label>
-                            <input asp-for="CsvFile" type="file" class="form-control" accept=".csv" />
+                            <label asp-for="CsvFile" class="form-label fw-bold">CSV or Excel File</label>
+                            <input asp-for="CsvFile" type="file" class="form-control" accept=".csv,.xlsx,.xlsm" />
                             <span asp-validation-for="CsvFile" class="text-danger"></span>
-                            <div class="form-text">Select a CSV file containing charterer data.</div>
+                            <div class="form-text">Select a CSV (.csv) or Excel (.xlsx) file containing charterer data.</div>
                         </div>
 
                         <div class="alert alert-warning">

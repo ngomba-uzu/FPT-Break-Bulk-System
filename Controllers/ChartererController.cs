@@ -50,13 +50,24 @@ namespace Break_Bulk_System.Controllers
 
             if (viewModel.CsvFile == null || viewModel.CsvFile.Length == 0)
             {
-                ModelState.AddModelError("CsvFile", "Please select a CSV file.");
+                ModelState.AddModelError("CsvFile", "Please select a file.");
                 return View(viewModel);
             }
 
-            if (!Path.GetExtension(viewModel.CsvFile.FileName).Equals(".csv", StringComparison.OrdinalIgnoreCase))
+            var extension = Path.GetExtension(viewModel.CsvFile.FileName);
+            var isExcel = extension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase)
+                          || extension.Equals(".xlsm", StringComparison.OrdinalIgnoreCase);
+
+            if (extension.Equals(".xls", StringComparison.OrdinalIgnoreCase))
             {
-                ModelState.AddModelError("CsvFile", "Please upload a CSV file.");
+                ModelState.AddModelError("CsvFile",
+                    "The old .xls format is not supported. Please save the file as .xlsx or .csv and upload it again.");
+                return View(viewModel);
+            }
+
+            if (!isExcel && !extension.Equals(".csv", StringComparison.OrdinalIgnoreCase))
+            {
+                ModelState.AddModelError("CsvFile", "Please upload a CSV (.csv) or Excel (.xlsx) file.");
                 return View(viewModel);
             }
 
@@ -66,12 +77,21 @@ namespace Break_Bulk_System.Controllers
 
                 using (var stream = viewModel.CsvFile.OpenReadStream())
                 {
-                    charterers = await ParseCharterersCsvAsync(stream);
+                    if (isExcel)
+                    {
+                        var csvText = ExcelService.ConvertFirstSheetToCsv(stream);
+                        using var csvStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(csvText));
+                        charterers = await ParseCharterersCsvAsync(csvStream);
+                    }
+                    else
+                    {
+                        charterers = await ParseCharterersCsvAsync(stream);
+                    }
                 }
 
                 if (!charterers.Any())
                 {
-                    ModelState.AddModelError("CsvFile", "No valid charterers found in the CSV file.");
+                    ModelState.AddModelError("CsvFile", "No valid charterers found in the uploaded file.");
                     return View(viewModel);
                 }
 
@@ -141,8 +161,8 @@ namespace Break_Bulk_System.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error processing CSV file");
-                ModelState.AddModelError("CsvFile", $"Error processing CSV file: {GetUserFriendlyErrorMessage(ex.Message)}");
+                _logger.LogError(ex, "Error processing uploaded charterer file");
+                ModelState.AddModelError("CsvFile", $"Error processing file: {GetUserFriendlyErrorMessage(ex.Message)}");
                 return View(viewModel);
             }
         }
@@ -171,7 +191,10 @@ namespace Break_Bulk_System.Controllers
 
                     // Validate headers
                     var requiredHeaders = new[] { "Key Code", "Description", "Long Description" };
-                    var missingHeaders = requiredHeaders.Where(h => !csv.HeaderRecord?.Contains(h) == true).ToList();
+                    var headers = csv.HeaderRecord?.Select(h => h.Trim()).ToList() ?? new List<string>();
+                    var missingHeaders = requiredHeaders
+                        .Where(h => !headers.Contains(h, StringComparer.OrdinalIgnoreCase))
+                        .ToList();
 
                     if (missingHeaders.Any())
                     {

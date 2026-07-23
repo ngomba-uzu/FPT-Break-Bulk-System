@@ -20,6 +20,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Add this to your Program.cs
 builder.Services.AddScoped<ICsvService, CsvService>();
+builder.Services.AddSingleton<IBarcodeService, BarcodeService>();
 
 // Program.cs
 builder.Services.AddHttpClient();

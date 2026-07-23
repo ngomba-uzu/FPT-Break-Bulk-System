@@ -1,6 +1,7 @@
 ﻿// Models/Manifest.cs
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Break_Bulk_System.Models
 {
@@ -8,6 +9,14 @@ namespace Break_Bulk_System.Models
     {
         [Key]
         public int Id { get; set; }
+
+        [DisplayName("Manifest No")]
+        [MaxLength(20)]
+        public string? ManifestNumber { get; set; }
+
+        [DisplayName("Product Barcode")]
+        [MaxLength(20)]
+        public string? ProductBarcode { get; set; }
 
         [Required]
         [DisplayName("Ship No")]
@@ -99,6 +108,8 @@ namespace Break_Bulk_System.Models
         public string? ExPRBC { get; set; }
 
 
+        // Navigation property only — never bound/validated from the create/edit form.
+        [ValidateNever]
         public virtual VesselMaster VesselMaster { get; set; } = null!;
 
         public DateTime CreatedDate { get; set; } = DateTime.Now;
