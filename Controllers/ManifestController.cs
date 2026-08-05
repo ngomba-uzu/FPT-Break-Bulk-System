@@ -284,15 +284,18 @@ namespace Break_Bulk_System.Controllers
             }
 
             viewModel.Manifest = manifest;
-            viewModel.BarcodeSvg = _barcodeService.GetCode128Svg(manifest.ProductBarcode!);
 
-            // The QR code points back to this page pre-filled, so scanning it with a
-            // phone/tablet opens the manifest details directly.
+            // Both codes point back to this page pre-filled, so scanning either one with a
+            // phone/tablet opens the manifest details directly. The barcode encodes the URL
+            // but still shows the product code as its human-readable caption.
             var scanUrl = Url.Action(
                 nameof(PrintBarcode),
                 "Manifest",
                 new { vesselCode = manifest.VesselCode, productBarcode = manifest.ProductBarcode },
                 Request.Scheme);
+
+            viewModel.BarcodeSvg = _barcodeService.GetCode128Svg(
+                scanUrl ?? manifest.ProductBarcode!, label: manifest.ProductBarcode);
             viewModel.QrDataUri = _barcodeService.GetQrCodePngDataUri(scanUrl ?? manifest.ProductBarcode!);
 
             return View(viewModel);
@@ -344,8 +347,9 @@ namespace Break_Bulk_System.Controllers
                     continue;
                 }
 
-                // The QR points back to the single-barcode page pre-filled, so scanning it
-                // with a phone/tablet opens that manifest's details directly.
+                // Both codes point back to the single-barcode page pre-filled, so scanning
+                // either one with a phone/tablet opens that manifest's details directly. The
+                // barcode encodes the URL but still shows the product code as its caption.
                 var scanUrl = Url.Action(
                     nameof(PrintBarcode),
                     "Manifest",
@@ -355,7 +359,8 @@ namespace Break_Bulk_System.Controllers
                 viewModel.Labels.Add(new PrintAllBarcodesViewModel.BarcodeLabel
                 {
                     Manifest = manifest,
-                    BarcodeSvg = _barcodeService.GetCode128Svg(manifest.ProductBarcode),
+                    BarcodeSvg = _barcodeService.GetCode128Svg(
+                        scanUrl ?? manifest.ProductBarcode, label: manifest.ProductBarcode),
                     QrDataUri = _barcodeService.GetQrCodePngDataUri(scanUrl ?? manifest.ProductBarcode)
                 });
             }

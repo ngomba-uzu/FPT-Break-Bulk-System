@@ -9,8 +9,11 @@ namespace Break_Bulk_System.Services
         /// <summary>
         /// Renders <paramref name="data"/> as a self-contained Code 128 (subset B) barcode SVG.
         /// Suitable for embedding directly in a page and scanning with a handheld/laser scanner.
+        /// <paramref name="label"/> is the human-readable text drawn under the bars; when null
+        /// the encoded <paramref name="data"/> is shown. This lets the bars encode something long
+        /// (e.g. a URL) while the caption stays short and readable (e.g. the product code).
         /// </summary>
-        string GetCode128Svg(string data, int moduleWidth = 2, int barHeight = 80);
+        string GetCode128Svg(string data, int moduleWidth = 2, int barHeight = 80, string? label = null);
 
         /// <summary>
         /// Renders <paramref name="data"/> as a QR code and returns it as a base64 PNG data URI
@@ -41,7 +44,7 @@ namespace Break_Bulk_System.Services
         private const int StartB = 104;
         private const int Stop = 106;
 
-        public string GetCode128Svg(string data, int moduleWidth = 2, int barHeight = 80)
+        public string GetCode128Svg(string data, int moduleWidth = 2, int barHeight = 80, string? label = null)
         {
             data ??= string.Empty;
 
@@ -103,10 +106,10 @@ namespace Break_Bulk_System.Services
                 isBar = !isBar;
             }
 
-            // Human-readable text under the barcode.
-            var label = System.Security.SecurityElement.Escape(data);
+            // Human-readable text under the barcode (caption may differ from the encoded data).
+            var caption = System.Security.SecurityElement.Escape(label ?? data);
             svg.Append($"<text x=\"{totalWidth / 2}\" y=\"{barHeight + 17}\" text-anchor=\"middle\" ")
-               .Append($"font-family=\"monospace\" font-size=\"16\" letter-spacing=\"2\" fill=\"#000000\">{label}</text>");
+               .Append($"font-family=\"monospace\" font-size=\"16\" letter-spacing=\"2\" fill=\"#000000\">{caption}</text>");
 
             svg.Append("</svg>");
             return svg.ToString();
