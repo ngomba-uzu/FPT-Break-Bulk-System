@@ -298,6 +298,77 @@ namespace Break_Bulk_System.Controllers
             return View(viewModel);
         }
 
+        // GET: /Manifest/PrintAllBarcodes
+        // Renders every product barcode belonging to a single vessel, laid out several
+        // per page so the whole vessel can be printed in one go.
+        [HttpGet]
+        public async Task<IActionResult> PrintAllBarcodes(string? vesselCode)
+        {
+            var viewModel = new PrintAllBarcodesViewModel
+            {
+                VesselCode = vesselCode,
+                Vessels = await _context.VesselMasters
+                    .OrderBy(v => v.VesselCode)
+                    .ToListAsync()
+            };
+
+            if (string.IsNullOrWhiteSpace(vesselCode))
+            {
+                return View(viewModel);
+            }
+
+            viewModel.Searched = true;
+            var trimmedVessel = vesselCode.Trim();
+
+            viewModel.Vessel = viewModel.Vessels
+                .FirstOrDefault(v => v.VesselCode == trimmedVessel);
+
+            var manifests = await _context.Manifests
+                .Include(m => m.VesselMaster)
+                .Where(m => m.VesselCode == trimmedVessel)
+                .OrderBy(m => m.ProductBarcode)
+                .ToListAsync();
+
+            if (manifests.Count == 0)
+            {
+                viewModel.ErrorMessage =
+                    $"No manifests found for vessel '{trimmedVessel}'.";
+                return View(viewModel);
+            }
+
+            foreach (var manifest in manifests)
+            {
+                // Skip records without a product barcode — nothing to render for them.
+                if (string.IsNullOrWhiteSpace(manifest.ProductBarcode))
+                {
+                    continue;
+                }
+
+                // The QR points back to the single-barcode page pre-filled, so scanning it
+                // with a phone/tablet opens that manifest's details directly.
+                var scanUrl = Url.Action(
+                    nameof(PrintBarcode),
+                    "Manifest",
+                    new { vesselCode = manifest.VesselCode, productBarcode = manifest.ProductBarcode },
+                    Request.Scheme);
+
+                viewModel.Labels.Add(new PrintAllBarcodesViewModel.BarcodeLabel
+                {
+                    Manifest = manifest,
+                    BarcodeSvg = _barcodeService.GetCode128Svg(manifest.ProductBarcode),
+                    QrDataUri = _barcodeService.GetQrCodePngDataUri(scanUrl ?? manifest.ProductBarcode)
+                });
+            }
+
+            if (viewModel.Labels.Count == 0)
+            {
+                viewModel.ErrorMessage =
+                    $"Vessel '{trimmedVessel}' has manifests, but none of them have a product barcode to print.";
+            }
+
+            return View(viewModel);
+        }
+
         private bool ManifestExists(int id)
         {
             return _context.Manifests.Any(e => e.Id == id);

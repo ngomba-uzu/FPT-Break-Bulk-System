@@ -1,0 +1,214 @@
+@model Break_Bulk_System.ViewModels.PrintAllBarcodesViewModel
+
+@{
+    ViewData["Title"] = "Print All Product Barcodes";
+}
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col">
+            <h2><i class="fas fa-barcode me-2"></i>Print All Product Barcodes</h2>
+        </div>
+        <div class="col text-end">
+            <a asp-action="PrintBarcode" class="btn btn-outline-secondary me-2">Single Barcode</a>
+            <a asp-action="Index" class="btn btn-secondary">Back to Manifests</a>
+        </div>
+    </div>
+
+    <!-- Search form -->
+    <div class="card mb-4 no-print">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Print every product barcode for a vessel</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="PrintAllBarcodes" method="get" class="row g-3 align-items-end">
+                <div class="col-md-8">
+                    <label class="form-label fw-bold">Vessel No</label>
+                    <select name="vesselCode" class="form-control">
+                        <option value="">-- Select Vessel --</option>
+                        @foreach (var vessel in Model.Vessels)
+                        {
+                            if (vessel.VesselCode == Model.VesselCode)
+                            {
+                                <option value="@vessel.VesselCode" selected>@vessel.VesselCode - @vessel.VesselName</option>
+                            }
+                            else
+                            {
+                                <option value="@vessel.VesselCode">@vessel.VesselCode - @vessel.VesselName</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-search me-1"></i> Display
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model.Searched && Model.ErrorMessage != null)
+    {
+        <div class="alert alert-warning no-print">
+            <i class="fas fa-exclamation-triangle me-1"></i> @Model.ErrorMessage
+        </div>
+    }
+
+    @if (Model.Labels.Count > 0)
+    {
+        <div class="d-flex justify-content-between align-items-center mb-3 no-print">
+            <div>
+                <strong>@Model.Labels.Count</strong> product barcode(s) for vessel
+                <strong>@Model.VesselCode</strong>@(Model.Vessel != null ? $" - {Model.Vessel.VesselName}" : "").
+            </div>
+            <button type="button" class="btn btn-primary" onclick="window.print()">
+                <i class="fas fa-print me-1"></i> Print All
+            </button>
+        </div>
+
+        <!-- Printed heading (only visible on paper) -->
+        <div class="print-heading">
+            <h3 class="mb-0">Vessel @Model.VesselCode@(Model.Vessel != null ? $" - {Model.Vessel.VesselName}" : "")</h3>
+            <p class="mb-0">Product Barcodes (@Model.Labels.Count)</p>
+        </div>
+
+        <div class="barcode-grid">
+            @foreach (var label in Model.Labels)
+            {
+                var m = label.Manifest;
+                <div class="barcode-label">
+                    <div class="barcode-svg">
+                        @Html.Raw(label.BarcodeSvg)
+                    </div>
+                    <div class="barcode-codes">
+                        <img src="@label.QrDataUri" alt="QR code for manifest @m.ManifestNumber" class="qr-img" />
+                    </div>
+                    <div class="barcode-meta">
+                        <div><span class="lbl">Manifest:</span> @m.ManifestNumber</div>
+                        <div><span class="lbl">Mark:</span> @m.Mark</div>
+                        <div><span class="lbl">Desc:</span> @m.Description</div>
+                        <div><span class="lbl">Qty:</span> @m.ExpectedQty</div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <style>
+        /* Grid layout on screen and paper */
+        .barcode-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .barcode-label {
+            border: 1px solid #999;
+            border-radius: 4px;
+            padding: 8px;
+            text-align: center;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .barcode-svg svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .barcode-codes {
+            margin-top: 4px;
+        }
+
+        .qr-img {
+            width: 90px;
+            height: auto;
+        }
+
+        .barcode-meta {
+            margin-top: 4px;
+            font-size: 12px;
+            text-align: left;
+            line-height: 1.3;
+        }
+
+        .barcode-meta .lbl {
+            font-weight: bold;
+        }
+
+        /* Hidden on screen, shown when printing */
+        .print-heading {
+            display: none;
+        }
+
+        @@media print {
+            @@page {
+                size: A4 portrait;
+                margin: 10mm;
+            }
+
+            .no-print,
+            .main-header,
+            footer {
+                display: none !important;
+            }
+
+            body {
+                background: #fff !important;
+            }
+
+            .container-fluid {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            h2 {
+                display: none !important;
+            }
+
+            .print-heading {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 8px;
+            }
+
+            .print-heading h3 {
+                font-size: 15px !important;
+                margin: 0 !important;
+            }
+
+            .print-heading p {
+                font-size: 11px !important;
+                margin: 0 !important;
+            }
+
+            /* Three barcodes across on paper */
+            .barcode-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+            }
+
+            .barcode-label {
+                border: 1px solid #666 !important;
+                padding: 5px !important;
+            }
+
+            .barcode-svg svg {
+                max-height: 55px !important;
+                width: auto !important;
+            }
+
+            .qr-img {
+                width: 60px !important;
+            }
+
+            .barcode-meta {
+                font-size: 9px !important;
+                line-height: 1.2 !important;
+            }
+        }
+    </style>
+}
